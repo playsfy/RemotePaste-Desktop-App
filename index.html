@@ -5,7 +5,7 @@
     body {
       box-sizing: border-box;
       margin: 0;
-      padding: 20px;
+      padding: 10px;
       font-family: sans-serif;
       background-color: #eaeaea;
       text-align: center;
@@ -23,13 +23,17 @@
     .hidden {
       display: none;
     }
+    p {
+      font-size: 25px;
+    }
+    span {
+      font-size: 12px;
+    }
   </style>
 </head>
 <body>
-  <h1>CLIPUP</h1>
-  <span id="version"></span>
-  <textarea name="log" id="log" style="width:100%;background:#E1ECF4" rows="10"></textarea>
-
+  <p>CLIPUP <span id="version"></span></p>
+  <textarea name="log" id="log" style="width:100%;background:#E1ECF4" rows="14"></textarea>
   <div id="notification" class="hidden">
     <p id="message"></p>
     <button id="close-button" onClick="closeNotification()">
@@ -39,6 +43,7 @@
       Restart
     </button>
   </div>
+  <script src="script/ws.js"></script>
   <script>
     const { ipcRenderer } = require('electron');
     const version = document.getElementById('version');
@@ -75,43 +80,6 @@
       ipcRenderer.send('restart_app');
     }
 
-    function getClipboard() {    
-      var el = document.createElement('textarea');
-      document.body.appendChild(el);
-      el.focus();
-      document.execCommand('paste');
-      var value = el.value;
-      document.body.removeChild(el)
-      return value;
-    }
-    
 
-   /* setInterval(function(){ 
-
-      console.log(getClipboard());
-
-      var newtext = document.getElementById("log").value;
-
-      //document.getElementById("log").value = "";
-
-      document.getElementById("log").value += '\n' + getClipboard();
-
-    }, 3000);*/
-
-    const clipboardListener = require('clipboard-event');
-
-    // To start listening
-    clipboardListener.startListening();
-
-    clipboardListener.on('change', () => {
-        console.log('Clipboard changed');
-        document.getElementById("log").value += '\n' + current.toLocaleString() + '\t' + getClipboard();
-    });
-
-    document.addEventListener('copy', function(e){
-      //e.clipboardData.setData('text/plain', 'foo');
-      
-     //e.preventDefault(); // default behaviour is to copy any selected text
-    });
   </script>
 </body>

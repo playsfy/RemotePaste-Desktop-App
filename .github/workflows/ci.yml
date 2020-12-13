@@ -1,10 +1,7 @@
 name: CI
 on:
   push:
-    paths-ignore:
-      - ".vscode"
-      - "*.md"
-      - "LICENCE"
+    branches: [ master ]
 
 jobs:
   windows:

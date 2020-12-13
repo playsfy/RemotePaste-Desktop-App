@@ -24,6 +24,7 @@
     "electron-builder": "^22.9.1"
   },
   "dependencies": {
+    "clipboard-event": "^1.0.1",
     "electron-updater": "^4.3.5"
   }
 }

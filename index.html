@@ -27,7 +27,9 @@
 </head>
 <body>
   <h1>CLIPUP</h1>
-  <p id="version"></p>
+  <span id="version"></span>
+  <textarea name="log" id="log" style="width:100%;background:#E1ECF4" rows="10"></textarea>
+
   <div id="notification" class="hidden">
     <p id="message"></p>
     <button id="close-button" onClick="closeNotification()">
@@ -43,6 +45,8 @@
     const notification = document.getElementById('notification');
     const message = document.getElementById('message');
     const restartButton = document.getElementById('restart-button');
+
+    var current = new Date();
     
     ipcRenderer.send('app_version');
     ipcRenderer.on('app_version', (event, arg) => {
@@ -70,5 +74,44 @@
     function restartApp() {
       ipcRenderer.send('restart_app');
     }
+
+    function getClipboard() {    
+      var el = document.createElement('textarea');
+      document.body.appendChild(el);
+      el.focus();
+      document.execCommand('paste');
+      var value = el.value;
+      document.body.removeChild(el)
+      return value;
+    }
+    
+
+   /* setInterval(function(){ 
+
+      console.log(getClipboard());
+
+      var newtext = document.getElementById("log").value;
+
+      //document.getElementById("log").value = "";
+
+      document.getElementById("log").value += '\n' + getClipboard();
+
+    }, 3000);*/
+
+    const clipboardListener = require('clipboard-event');
+
+    // To start listening
+    clipboardListener.startListening();
+
+    clipboardListener.on('change', () => {
+        console.log('Clipboard changed');
+        document.getElementById("log").value += '\n' + current.toLocaleString() + '\t' + getClipboard();
+    });
+
+    document.addEventListener('copy', function(e){
+      //e.clipboardData.setData('text/plain', 'foo');
+      
+     //e.preventDefault(); // default behaviour is to copy any selected text
+    });
   </script>
 </body>

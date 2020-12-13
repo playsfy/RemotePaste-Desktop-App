@@ -1,0 +1,58 @@
+name: CI
+on:
+  push:
+    paths-ignore:
+      - ".vscode"
+      - "*.md"
+      - "LICENCE"
+
+jobs:
+  windows:
+    name: Windows build on node ${{ matrix.node_version }}
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        node_version: [12.x]
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Set Node.js version ${{ matrix.node_version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node_version }}
+
+      - name: Install packages
+        run: npm install
+
+      - name: Run build
+        run: npm run build:win
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+  linux:
+    name: Linux build on node ${{ matrix.node_version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version: [12.x]
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Set Node.js version ${{ matrix.node_version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node_version }}
+
+      - name: Install packages
+        run: npm install
+
+      - name: Run build
+        run: npm run build:linux
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}

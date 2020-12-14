@@ -1,5 +1,7 @@
 const connection = new WebSocket('ws://localhost:8020');
 
+var current = new Date();
+
 connection.onopen = () => {
   console.log('connected');
 };
@@ -14,10 +16,21 @@ connection.onerror = error => {
 
 connection.onmessage = event => {
   console.log('received', event.data.toString());
-  /*let li = document.createElement('li');
-  li.innerText = event.data;
-  document.querySelector('#chat').append(li);*/
+  document.getElementById("log").value += '\n' + current.toLocaleString() + '\t' + event.data.toString();
+  //setClipboard(event.data);
 };
+
+function setClipboard(data) {
+
+  var copyText = data
+
+  document.addEventListener('copy', function(e){
+    e.clipboardData.setData('text/plain', 'foo');  
+    e.preventDefault();
+  });
+
+  document.execCommand("copy");
+}
 
 function getClipboard() {    
   var el = document.createElement('textarea');
@@ -35,8 +48,8 @@ clipboardListener.startListening();
 
 clipboardListener.on('change', () => {
   console.log('Clipboard changed');
-  connection.send(message);
-  document.getElementById("log").value += '\n' + current.toLocaleString() + '\t' + getClipboard();
+  connection.send(getClipboard());
+  //document.getElementById("log").value += '\n' + current.toLocaleString() + '\t' + getClipboard();
 });
     
 

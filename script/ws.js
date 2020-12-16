@@ -1,35 +1,52 @@
-const connection = new WebSocket('ws://localhost:8020');
+var connection;
 
-var current = new Date();
+connect();
 
-connection.onopen = () => {
-  console.log('connected');
-};
+function connect() {
 
-connection.onclose = () => {
-  console.error('disconnected');
-};
+  connection = new WebSocket('ws://clipup.herokuapp.com');
 
-connection.onerror = error => {
-  console.error('failed to connect', error);
-};
+  connection.onopen = () => {
+    console.log('connected');
+    version.innerText = vrsn;
+    /*connection.send(JSON.stringify({
+       userid: "SXR42DS"
+    }));*/
+  };
 
-connection.onmessage = event => {
-  console.log('received', event.data.toString());
-  document.getElementById("log").value += '\n' + current.toLocaleString() + '\t' + event.data.toString();
-  //setClipboard(event.data);
-};
+  connection.onclose = error => {
+    console.log('Socket is closed. Reconnect will be attempted in 1 second.', error.reason);
+    setTimeout(function() {
+      connect();
+      version.innerText = 'Reconnecting';
+    }, 1000);
+  };
+
+  connection.onerror = error => {
+    console.error('failed to connect', error);
+  };
+
+  connection.onmessage = event => {
+    console.log('received', event.data.toString());
+    var current = new Date();
+    document.getElementById("log").value += '\n' + current.toLocaleString() + '\t' + event.data.toString();
+
+    setClipboard(event.data);
+    document.getElementById("log").scrollTop = document.getElementById("log").scrollHeight;
+  };
+}
 
 function setClipboard(data) {
 
   var copyText = data
 
-  document.addEventListener('copy', function(e){
-    e.clipboardData.setData('text/plain', 'foo');  
-    e.preventDefault();
-  });
-
-  document.execCommand("copy");
+  var sampleEditor = document.createElement('textarea');
+  document.body.appendChild(sampleEditor);
+  sampleEditor.value = event.data.toString();
+  sampleEditor.focus();
+  sampleEditor.select();
+  document.execCommand('copy');
+  document.body.removeChild(sampleEditor);
 }
 
 function getClipboard() {    
@@ -44,34 +61,41 @@ function getClipboard() {
 
 const clipboardListener = require('clipboard-event');
 
+var oldclip;
+
 clipboardListener.startListening();
 
 clipboardListener.on('change', () => {
   console.log('Clipboard changed');
-  connection.send(getClipboard());
+  var clipx = getClipboard();
+
+  if( clipx != oldclip){
+    connection.send(clipx);
+    oldclip = clipx;
+  }
   //document.getElementById("log").value += '\n' + current.toLocaleString() + '\t' + getClipboard();
 });
     
 
-   /* setInterval(function(){ 
+/* setInterval(function(){ 
 
-      console.log(getClipboard());
+  console.log(getClipboard());
 
-      var newtext = document.getElementById("log").value;
+  var newtext = document.getElementById("log").value;
 
-      //document.getElementById("log").value = "";
+  //document.getElementById("log").value = "";
 
-      document.getElementById("log").value += '\n' + getClipboard();
+  document.getElementById("log").value += '\n' + getClipboard();
 
-    }, 3000);*/
+}, 3000);*/
 
 
 
-    document.addEventListener('copy', function(e){
-      //e.clipboardData.setData('text/plain', 'foo');
-      
-     //e.preventDefault(); // default behaviour is to copy any selected text
-    });
+/*document.addEventListener('copy', function(e){
+  //e.clipboardData.setData('text/plain', 'foo');
+  
+ //e.preventDefault(); // default behaviour is to copy any selected text
+});*/
 
 /*document.querySelector('form').addEventListener('submit', event => {
   event.preventDefault();

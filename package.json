@@ -1,6 +1,6 @@
 {
   "name": "clipup",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "main.js",
   "repository": {
@@ -26,5 +26,34 @@
   "dependencies": {
     "clipboard-event": "^1.0.1",
     "electron-updater": "^4.3.5"
+  },
+  "build": {
+    "productName": "Clipup",
+    "appId": "clipup.gitleaf.com",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "clipup",
+        "repo": "clipup"
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis:ia32",
+        "nsis:x64"
+      ],
+      "publisherName": "GitLeaf, Inc.",
+      "icon": "build/icons/icon.ico"
+    },
+    "linux": {
+      "synopsis": "Copy once paste anywhere",
+      "category": "Utility",
+      "target": [
+        "deb",
+        "zip",
+        "AppImage"
+      ],
+      "icon": "build/icons"
+    }
   }
 }

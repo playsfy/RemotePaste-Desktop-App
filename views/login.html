@@ -118,22 +118,24 @@
 				var upass = $("#passwrd").val();
 
 				$.ajax({
-					url: "https://clinext.herokuapp.com/api/v1/login",
+					url: "https://clinext.herokuapp.com/api/login",
+					//url: "http://127.0.0.1:8000/api/login",
 					//dataType: 'json',
-					type: "get",
+					type: "post",
 					//contentType: 'application/json',
 					data: { email: umail, password: upass },
 					success: function (data) {
 						if (data.status == true) {
-							localStorage.setItem("authuserID", "4566");
+
+							localStorage.setItem("authuserID", data.data.id);
 							localStorage.setItem("logged_mail", umail);
-							localStorage.setItem("logged_pass", upass);
-							localStorage.setItem("_token", data.data);
+							localStorage.setItem("logged_user", data.data.name);
+							localStorage.setItem("data", data.data);
 
 							window.location.href = "index.html";
 						} else {
-							$("#ename").val("");
-							$("#epass").val("");
+							$("#usrname").val("");
+							$("#passwrd").val("");
 
 							$("#notify").show();
 							$("#notify").html(
@@ -147,8 +149,6 @@
 					error: function (errorThrown) {
 						console.log(errorThrown);
 
-						$body.removeClass("loading");
-
 						$("#notify").show();
 						$("#notify").html(
 							"Please check your internet connection."
@@ -158,7 +158,6 @@
 						}, 5000);
 					},
 				});
-				//window.location = 'index.html';
 			}
 		</script>
 	</body>

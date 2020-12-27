@@ -10,8 +10,9 @@ function createWindow () {
     webPreferences: {
       nodeIntegration: true,
     },
+    icon:'build/icons/icon.png'
   });
-  mainWindow.loadFile('index.html');
+  mainWindow.loadFile('views/index.html');
   mainWindow.on('closed', function () {
     mainWindow = null;
   });

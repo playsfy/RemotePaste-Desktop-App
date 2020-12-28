@@ -7,10 +7,7 @@ function connect() {
 
   connection.onopen = () => {
     console.log("connected");
-    version.innerText = vrsn;
-    /*connection.send(JSON.stringify({
-       userid: "SXR42DS"
-    }));*/
+    constatus.innerHTML = '<span style="color: green;"> connected </span>';
   };
 
   connection.onclose = (error) => {
@@ -20,7 +17,8 @@ function connect() {
     );
     setTimeout(function () {
       connect();
-      version.innerText = "Reconnecting";
+      constatus.innerHTML =
+        '<span style="color: orange;"> Reconnecting.. </span>';
     }, 1000);
   };
 
@@ -70,7 +68,7 @@ clipboardListener.startListening();
 
 clipboardListener.on("change", () => {
   console.log("Clipboard changed");
-  var authID = localStorage.getItem("auth");
+  var authID = localStorage.getItem("authuserID");
   var clipx = getClipboard().toString();
   var data = { clipboard: clipx, user: authID };
   if (clipx != oldclip) {

@@ -3,7 +3,7 @@ const { autoUpdater } = require("electron-updater");
 
 let mainWindow;
 
-//Menu.setApplicationMenu(null);
+Menu.setApplicationMenu(null);
 
 function createWindow() {
   mainWindow = new BrowserWindow({

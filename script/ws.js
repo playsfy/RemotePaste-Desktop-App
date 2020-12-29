@@ -7,7 +7,8 @@ function connect() {
 
   connection.onopen = () => {
     console.log("connected");
-    constatus.innerHTML = '<span style="color: green;"> connected </span>';
+    constatus.innerHTML =
+      '<a href="javascript:void(0)" style="color: green;"> connected </a>';
   };
 
   connection.onclose = (error) => {
@@ -18,7 +19,7 @@ function connect() {
     setTimeout(function () {
       connect();
       constatus.innerHTML =
-        '<span style="color: orange;"> Reconnecting.. </span>';
+        '<a href="javascript:void(0)" style="color: orange;"> Reconnecting.. </a>';
     }, 1000);
   };
 

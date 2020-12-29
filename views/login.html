@@ -10,6 +10,14 @@
 		<script>
 			window.$ = window.jQuery = require("jquery");
 		</script>
+		<style type="text/css">
+			.border-red {
+				border: 1px solid red;
+			}
+			.hide {
+				display: none;
+			}
+		</style>
 	</head>
 	<body>
 		<div class="absolute w-full h-full">
@@ -25,7 +33,7 @@
 								<div class="text-center mb-3">
 									<center>
 										<img
-											src="../build/icons/icon.png"
+											src="../build/icons/bg-white.png"
 											width="100"
 										/>
 									</center>
@@ -48,6 +56,12 @@
 											"
 											id="usrname"
 										/>
+										<span
+											class="flex items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1 hide"
+											id="emailerror"
+										>
+											Invalid email field !
+										</span>
 									</div>
 									<div class="relative w-full mb-3">
 										<label
@@ -63,20 +77,18 @@
 											"
 											id="passwrd"
 										/>
+										<span
+											class="flex items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1 hide"
+											id="passerror"
+										>
+											Invalid password field !
+										</span>
 									</div>
 									<div>
 										<label
 											id="notify"
 											class="inline-flex items-center cursor-pointer"
-											><!-- <input
-                          id="customCheckLogin"
-                          type="checkbox"
-                          class="form-checkbox text-green-800 ml-1 w-5 h-5"
-                          style="transition: all 0.15s ease 0s;"
-                        /><span class="ml-2 text-sm font-semibold text-green-700"
-                          >Remember me</span
-                        > --></label
-										>
+										></label>
 									</div>
 									<div class="text-center mt-6">
 										<button
@@ -117,48 +129,64 @@
 				var umail = $("#usrname").val();
 				var upass = $("#passwrd").val();
 
-				$.ajax({
-					url: "https://clinext.herokuapp.com/api/login",
-					//url: "http://127.0.0.1:8000/api/login",
-					//dataType: 'json',
-					type: "post",
-					//contentType: 'application/json',
-					data: { email: umail, password: upass },
-					success: function (data) {
-						if (data.status == true) {
+				if (!umail) {
+					$("#usrname").addClass("border-red");
+					$("#emailerror").removeClass("hide");
+				} else if (!upass) {
+					$("#passwrd").addClass("border-red");
+					$("#passerror").removeClass("hide");
+				} else {
+					$.ajax({
+						url: "https://clinext.herokuapp.com/api/login",
+						//url: "http://127.0.0.1:8000/api/login",
+						//dataType: 'json',
+						type: "post",
+						//contentType: 'application/json',
+						data: { email: umail, password: upass },
+						success: function (data) {
+							if (data.status == true) {
+								localStorage.setItem(
+									"authuserID",
+									data.data.id
+								);
+								localStorage.setItem("logged_mail", umail);
+								localStorage.setItem(
+									"logged_user",
+									data.data.name
+								);
+								localStorage.setItem("data", data.data);
 
-							localStorage.setItem("authuserID", data.data.id);
-							localStorage.setItem("logged_mail", umail);
-							localStorage.setItem("logged_user", data.data.name);
-							localStorage.setItem("data", data.data);
+								window.location.href = "index.html";
+							} else {
+								$("#usrname").val("");
+								$("#passwrd").val("");
 
-							window.location.href = "index.html";
-						} else {
-							$("#usrname").val("");
-							$("#passwrd").val("");
+								$("#usrname").addClass("border-red");
+								$("#passwrd").addClass("border-red");
 
-							$("#notify").show();
-							$("#notify").html(
-								"Please enter correct credintials."
-							);
-							setTimeout(function () {
-								$("#notify").toggle("slide");
-							}, 5000);
-						}
-					},
-					error: function (errorThrown) {
-						console.log(errorThrown);
+								$("#emailerror").removeClass("hide");
+								$("#passerror").removeClass("hide");
+							}
+						},
+						error: function (errorThrown) {
+							console.log(errorThrown);
 
-						$("#notify").show();
-						$("#notify").html(
-							"Please check your internet connection."
-						);
-						setTimeout(function () {
-							$("#notify").toggle("slide");
-						}, 5000);
-					},
-				});
+							const myNotification = new Notification("Clipup", {
+								body:
+									"Please check your internet connection or server not responding",
+							});
+						},
+					});
+				}
 			}
+			$("#usrname").on("change keyup paste", function () {
+				$("#usrname").removeClass("border-red");
+				$("#emailerror").addClass("hide");
+			});
+			$("#passwrd").on("change keyup paste", function () {
+				$("#passwrd").removeClass("border-red");
+				$("#passerror").addClass("hide");
+			});
 		</script>
 	</body>
 </html>

@@ -26,6 +26,7 @@
   "dependencies": {
     "clipboard-event": "^1.0.1",
     "electron-updater": "^4.3.5",
+    "fs": "0.0.1-security",
     "jquery": "^3.5.1",
     "tailwindcss": "^2.0.2"
   },

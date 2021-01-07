@@ -7,14 +7,14 @@ Menu.setApplicationMenu(null);
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 650,
-    height: 380,
+    width: 400,
+    height: 585,
     webPreferences: {
       nodeIntegration: true,
     },
     icon: "build/icons/icon.png",
   });
-  mainWindow.loadFile("views/index.html");
+  mainWindow.loadFile("views/login.html");
   mainWindow.on("closed", function () {
     mainWindow = null;
   });

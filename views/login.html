@@ -9,6 +9,10 @@
 		/>
 		<script>
 			window.$ = window.jQuery = require("jquery");
+
+		    if (localStorage.getItem("authuserID")) {
+		      window.location = "index.html";
+		    }
 		</script>
 		<style type="text/css">
 			.border-red {
